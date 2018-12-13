@@ -1,0 +1,53 @@
+
+# https://wiki.archlinux.org/index.php/LDAP_authentication
+# https://www.itzgeek.com/how-tos/linux/ubuntu-how-tos/configure-ldap-client-on-ubuntu-16-04-debian-8.html
+# https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-ubuntu-16-04
+# https://wiki.archlinux.org/index.php/LDAP_authentication
+
+sudo apt-get update
+sudo apt-get install slapd ldap-utils
+sudo dpkg-reconfigure slapd
+
+
+Example ldif for user
+# change /home/joe/ to /tmp/ if you don't want them to store any perm files
+dn: uid=joe,dc=example,dc=io
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: joe
+cn: Joe
+sn: Doe
+givenName: Joe
+title: Guinea Pig
+telephoneNumber: +0 000 000 0000
+mobile: +0 000 000 0000
+postalAddress: AddressLine1$AddressLine2$AddressLine3
+userPassword: {CRYPT}somecryptedpassyoucangetfrometcshadow.
+labeledURI: https://archlinux.org/
+loginShell: /bin/bash
+uidNumber: 9999
+gidNumber: 9999
+homeDirectory: /home/joe/ 
+description: This is an example user
+
+
+ldapadd -D "cn=admin,dc=pyrofex,dc=io" -W -f joe.ldif 
+
+ldapsearch -H ldap://localhost -x -LLL -b "dc=example,dc=io" "(objectClass=simpleSecurityObject)" dn
+
+ldapsearch -H ldap://localhost -x -D "cn=admin,dc=example,dc=io" -W -LLL -b "dc=example,dc=io" "(objectClass=simpleSecurityObject)" dn
+ldapadd -x -D "cn=admin,dc=example,dc=io" -W -f jeremy.ldif
+ldapsearch -Wx -D "cn=admin,dc=example,dc=io" -b "dc=example,dc=io" -H ldap://127.0.0.1 -LLL > ldap_dump-20100525-1.ldif
+ldappasswd -H ldap://localhost -x -D "uid=jeremy,dc=example,dc=io" -W -A -S
+ldappasswd -H ldap://server_domain_or_IP -x -D "cn=admin,dc=example,dc=com" -W -S "uid=bob,ou=people,dc=example,dc=com"
+
+ldappasswd -H ldap://localhost -x -D "cn=admin,dc=example,dc=io" -W -S "uid=jeremy,dc=example,dc=io"
+
+ldappasswd -H ldap://localhost -x -D "uid=jeremy,dc=example,dc=io" -W -A -S
+
+
+
