@@ -4,6 +4,7 @@
 # https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-openldap-and-phpldapadmin-on-ubuntu-16-04
 # https://wiki.archlinux.org/index.php/LDAP_authentication
 # http://pig.made-it.com/ldap-openssh.html
+# https://wiki.zimbra.com/index.php?title=SSH_Auth_and_Access_Control_Against_Zimbra_LDAP
 
 sudo apt-get update
 sudo apt-get install slapd ldap-utils
